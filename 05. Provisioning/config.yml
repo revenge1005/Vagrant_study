@@ -1,0 +1,16 @@
+---
+- name: master
+  memory: 4096
+  cpu: 2
+  ip: 192.168.123.10
+  comment: "Master Node"
+- name: node01
+  memory: 2048
+  cpu: 2
+  ip: 192.168.123.101
+  comment: "Worker Node #01"
+- name: node02
+  memory: 2048
+  cpu: 2
+  ip: 192.168.123.102
+  comment: "Worker Node #02"

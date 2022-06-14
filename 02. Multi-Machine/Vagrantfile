@@ -1,0 +1,44 @@
+Vagrant.configure("2") do |config|
+
+    config.vm.define "node01" do |node01|
+        node01.vm.box = "ubuntu/focal64"
+        node01.vm.box_version = "20211026.0.0"
+        node01.vm.hostname = "node01"
+       #node01.vm.network "private_network"
+        node01.vm.network "forwarded_port", guest: 22, host: 60510, auto_correct: true, id: "ssh"
+  
+        node01.vm.provision "shell", inline: "echo 'sudo su -' >> .bashrc"
+        node01.vm.provision "shell", inline: "apt update"
+        node01.vm.provision "shell", inline: "apt install -y conntrack bridge-utils net-tools resolvconf jq tree"
+  
+        node01.vm.synced_folder "./", "/vagrant", disabled: true
+  
+        node01.vm.provider "virtualbox" do |spec|
+            #-> 메모리, cpu, 가상머신이름 지정
+            spec.memory = "2048"
+            spec.cpus = "2"
+            spec.name = "node01"
+        end
+    end
+  
+    config.vm.define "node02" do |node02|
+        node02.vm.box = "ubuntu/focal64"
+        node02.vm.box_version = "20211026.0.0"
+        node02.vm.hostname = "node02"
+       #node02.vm.network "private_network"
+        node02.vm.network "forwarded_port", guest: 22, host: 60510, auto_correct: true, id: "ssh"
+  
+        node02.vm.provision "shell", inline: "echo 'sudo su -' >> .bashrc"
+        node02.vm.provision "shell", inline: "apt update"
+        node02.vm.provision "shell", inline: "apt install -y conntrack bridge-utils net-tools resolvconf jq tree"
+  
+        node02.vm.synced_folder "./", "/vagrant", disabled: true
+  
+        node02.vm.provider "virtualbox" do |spec|
+            #-> 메모리, cpu, 가상머신이름 지정
+            spec.memory = "2048"
+            spec.cpus = "2"
+            spec.name = "node02"
+        end
+    end
+  end

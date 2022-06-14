@@ -1,0 +1,55 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "ubuntu/xenial64"
+  
+    config.vm.define "node01" do |node01|
+  
+      node01.vm.hostname = "node01"
+      node01.vm.network "private_network", ip: "172.168.111.10"
+      node01.vm.network "public_network", ip: "192.168.50.10"
+  
+      node01.vm.network "forwarded_port", guest: 22, host: 60510, auto_correct: true, id: "ssh" 
+      node01.vm.synced_folder "./", "/vagrant", disabled: true
+  
+      node01.vm.provider "virtualbox" do |vb|
+
+        # customize
+        #-> https://www.virtualbox.org/manual/ch08.html
+
+        # 메모리 설정
+        vb.customize ["modifyvm", :id, "--memory", 1024*2]
+        vb.customize ["modifyvm", :id, "--cpus", 2]
+        vb.customize ["modifyvm", :id, "--name", "node01"]
+     
+        # 디스크 설정, 만약 파일이 존재하지 않을경우 디스크 파일 생성
+        if !File.exist?("mst01.vdi")
+          vb.customize ["createhd", "--filename", "mst01.vdi", "--size", 1024*10, "--variant", "Fixed"]
+          vb.customize ["modifyhd", "mst01.vdi", "--type", "shareable"]
+        end
+        # 해당 디스크 파일으로 VM에 추가
+        #-> os(Box) 마다 지원(?)하는 스토리지 컨트롤러가 다르기 때문에 확인 해야함
+        #-> 예시로 ubuntu/xenial64 에서 SATA 컨트롤러를 선택하면 컨트롤러가 없다고 에러 발생
+        vb.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 2, "--device", 0, "--type", "hdd", "--medium", "mst01.vdi"]
+  
+        if !File.exist?("mst02.vdi")
+          vb.customize ["createhd", "--filename", "mst02.vdi", "--size", 1024*4, "--variant", "Fixed"]
+          vb.customize ["modifyhd", "mst02.vdi", "--type", "shareable"]
+        end
+        vb.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 3, "--device", 0, "--type", "hdd", "--medium", "mst02.vdi"]
+  
+        if !File.exist?("mst03.vdi")
+          vb.customize ["createhd", "--filename", "mst03.vdi", "--size", 1024*4, "--variant", "Fixed"]
+          vb.customize ["modifyhd", "mst03.vdi", "--type", "share++able"]
+        end
+        vb.customize ["storageattach", :id, "--storagectl", "SCSI", "--port", 4, "--device", 0, "--type", "hdd", "--medium", "mst03.vdi"]
+  
+        # NIC 추가 및 설정
+        vb.customize ["modifyvm", :id, "--nic2", "hostonly", "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]
+        vb.customize ["modifyvm", :id, "--nic3", "natnetwork"]
+        vb.customize ["modifyvm", :id, "--nat-network3", "NatNetwork"]
+      end
+    end
+end

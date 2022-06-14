@@ -1,0 +1,51 @@
+# "An Improved Way to use YAML with Vagrant"
+
+# Require YAML module
+require 'yaml'
+
+# Read YAML file with box details
+vm_spec = YAML.load_file(File.join(File.dirname(__FILE__), 'config.yml'))
+
+# OS & Version
+linux_os = "ubuntu/focal64"
+linux_version = "20220608.0.0"
+
+Vagrant.configure("2") do |config|
+  vm_spec.each do |spec|
+    config.vm.define spec["name"] do |cfg|
+      cfg.vm.box = linux_os
+      cfg.vm.box_version = linux_version
+      cfg.vm.network "public_network", ip: spec["ip"]
+      cfg.vm.hostname = spec["name"]
+
+      # Provisioning
+      #-> 1. "배포 중 실행하는 부분, VM 생성하면서 해당 Shell Script를 자동으로 수행"
+      cfg.vm.provision "shell", inline: "echo 'sudo su -' >> .bashrc"
+      cfg.vm.provision "shell", inline: "apt update"
+      cfg.vm.provision "shell", inline: <<-SHELL
+        apt install -y conntrack bridge-utils net-tools resolvconf jq tree
+        echo 'nameserver 8.8.8.8' > /etc/resolvconf/resolv.conf.d/head
+        resolvconf -u
+      SHELL
+
+      #-> 2. "호스트에서 게스트으로 파일 또는 디렉토리를 복제"
+      cfg.vm.provision "file", source: "./config.yml", destination: "$HOME/remote/config.yml"
+      cfg.vm.provision "file", source: "./upload", destination: "$HOME/remote/upload"
+
+      #-> 3. "Ansible의 Playbook 실행 (단, Vagrant를 실행 시키는 환경에 Ansible이 설치되어 있어야 해당 명령을 수행)"
+      #-> 그 외 Chef, Docker, Puppet 등을 지원하며, 자세한 것은 https://www.vagrantup.com/docs/provisioning 참고
+      #-> 그 외 옵션 관련
+      #-> https://www.vagrantup.com/docs/provisioning/ansible_common
+      #-> https://runebook.dev/ko/docs/vagrant/provisioning/ansible_common
+      config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "apache-playbook.yaml"
+      end
+
+      cfg.vm.provider "virtualbox" do |vb|
+        vb.memory = spec["memory"]
+        vb.cpus = spec["cpu"]
+        vb.name = spec["name"]
+      end
+    end
+  end
+end
