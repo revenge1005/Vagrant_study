@@ -6,20 +6,17 @@ Vagrant는 VirtualBox, VMware, KVM, Linux Container (LXC), Docker 등으로 만�
 
 -> https://blog.naver.com/revenge1005/222675750306
 
----
 
 ## 2. 용어 정리
 
 ![01](https://user-images.githubusercontent.com/42735894/173550202-2411669f-745e-4f17-aa1f-c7004d03bcba.PNG)
 
----
 
 ## 3. 자주 사용하는 명령어
 
 ![02](https://user-images.githubusercontent.com/42735894/173550221-e75c8239-7c83-485c-b98e-d98e4afd5cab.PNG)
 
 
----
 
 ## 4. 실습 환경 (Vagrant + VirtualBox) 
 
