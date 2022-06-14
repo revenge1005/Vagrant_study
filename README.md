@@ -27,19 +27,35 @@ Vagrant는 VirtualBox, VMware, KVM, Linux Container (LXC), Docker 등으로 만�
 ## 5. 참고 자료
 
 https://www.virtualbox.org/manual/ch08.html
+
 https://github.com/Jpub/15_DandK/blob/master/vagrant-kubernetes/Vagrantfile
+
 https://www.vagrantup.com/docs/disks/virtualbox
+
 https://www.vagrantup.com/docs/disks/usage
+
 https://gist.github.com/lktslionel/e11813996644313f997944c7a99be1f0
+
 https://github.com/choisungwook-vagrant/template/blob/main/Vagrantfile
+
 https://nyyang.tistory.com/132
+
 https://100milliongold.github.io/2018/12/15/Vagrant-%EC%82%AC%EC%9A%A9%EB%B2%95/
+
 https://tech.somma.kr/Vargrant/
+
 https://www.vagrantup.com/docs/multi-machine#Controlling%20Multiple%20Machines
+
 https://www.vagrantup.com/docs/disks/usage
+
 https://github.com/hashicorp/vagrant/issues/8107
+
 https://github.com/kusnier/vagrant-persistent-storage/issues/33
+
 https://blog.scottlowe.org/2016/01/14/improved-way-yaml-vagrant/
+
 https://blog.scottlowe.org/2014/10/22/multi-machine-vagrant-with-yaml/
+
 https://jjeongil.tistory.com/1337
+
 https://www.middlewareinventory.com/blog/vagrant-ansible-example/
